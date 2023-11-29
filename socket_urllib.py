@@ -2,6 +2,7 @@ import socket
 
 mysock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 mysock.settimeout(5)
+
 try:
     mysock.connect(("data.pr4e.org", 80))
     cmd = "GET http://data.pr4e.org/romeo.txt HTTP/1.0\r\n\r\n".encode()
@@ -14,12 +15,15 @@ try:
         print(data.decode())
 except socket.error as e:
     print(f"Socket error: {e}")
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
 finally:
     mysock.close()
 
 import urllib.request, urllib.error
 
 url = "http://data.pr4e.org/romeo.txt"
+
 try:
     with urllib.request.urlopen(url, timeout=5) as fhand:
         for line in fhand:
@@ -28,6 +32,8 @@ except urllib.error.URLError as e:
     print(f"URL error: {e}")
 except urllib.error.HTTPError as e:
     print(f"HTTP error: {e}")
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
 
 fhand = urllib.request.urlopen("http://data.pr4e.org/romeo.txt")
 counts = dict()
