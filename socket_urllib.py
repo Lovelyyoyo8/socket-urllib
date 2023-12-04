@@ -1,5 +1,7 @@
 import socket
+import urllib.request, urllib.error
 
+# Using socket
 mysock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 mysock.settimeout(5)
 
@@ -8,10 +10,13 @@ try:
     cmd = "GET http://data.pr4e.org/romeo.txt HTTP/1.0\r\n\r\n".encode()
     mysock.send(cmd)
 
+    char_count_socket = 0
+
     while True:
         data = mysock.recv(512)
         if len(data) < 1:
             break
+        char_count_socket += len(data)
         print(data.decode())
 except socket.error as e:
     print(f"Socket error: {e}")
@@ -20,13 +25,15 @@ except Exception as e:
 finally:
     mysock.close()
 
-import urllib.request, urllib.error
 
+# Using urllib
 url = "http://data.pr4e.org/romeo.txt"
 
 try:
     with urllib.request.urlopen(url, timeout=5) as fhand:
+        char_count_urllib = 0
         for line in fhand:
+            char_count_urllib += len(line)
             print(line.decode().strip())
 except urllib.error.URLError as e:
     print(f"URL error: {e}")
@@ -35,10 +42,17 @@ except urllib.error.HTTPError as e:
 except Exception as e:
     print(f"An unexpected error occurred: {e}")
 
+# Calculate total character count using urllib
+print(f"Total characters using socket: {char_count_socket}")
+print(f"Total characters using urllib: {char_count_urllib}")
+
+# Count words using urllib
 fhand = urllib.request.urlopen("http://data.pr4e.org/romeo.txt")
 counts = dict()
+
 for line in fhand:
     words = line.decode().split()
     for word in words:
         counts[word] = counts.get(word, 0) + 1
+
 print(counts)
