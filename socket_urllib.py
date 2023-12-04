@@ -1,5 +1,6 @@
 import socket
 import urllib.request, urllib.error
+from html.parser import HTMLParser
 
 # Using socket
 mysock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -65,3 +66,24 @@ for line in fhand:
         counts[word] = counts.get(word, 0) + 1
 
 print(counts)
+
+
+class MyHTMLParser(HTMLParser):
+    def handle_starttag(self, tag, attrs):
+        if tag == "a":
+            for attr in attrs:
+                if attr[0] == "href":
+                    print(f"Found hyperlink: {attr[1]}")
+
+html_url = "http://www.example.com"
+try:
+    with urllib.request.urlopen(html_url, timeout=5) as html_fhand:
+        html_content = html_fhand.read().decode()
+        parser = MyHTMLParser()
+        parser.feed(html_content)
+except urllib.error.URLError as e:
+    print(f"URL error: {e}")
+except urllib.error.HTTPError as e:
+    print(f"HTTP error: {e}")
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
