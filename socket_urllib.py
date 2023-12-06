@@ -48,6 +48,7 @@ except urllib.error.HTTPError as e:
 except Exception as e:
     print(f"An unexpected error occurred: {e}")
 
+
 print(f"Total characters using socket: {char_count_socket}")
 print(f"Total characters using urllib: {char_count_urllib}")
 
