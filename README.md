@@ -1,2 +1,2 @@
 # socket_urllib
-Tried to compare socket and urllib.
+tried to compare socket and urllib
